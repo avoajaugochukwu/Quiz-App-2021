@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import redirect, reverse, get_object_or_404
 from .models import *
 from .forms import TestDetailForm
 from datetime import datetime
@@ -10,12 +11,12 @@ def index(request):
 
     return render(request, 'quiz/index.html', {'form': form})
 
-def test(request):
+def initialize_test(request):
     # We are using a post here because we save the username to the database
     if request.method == 'POST':
         name = request.POST['username']
         form = TestDetailForm(request.POST)
-        
+
         if form.is_valid():
             username = form.cleaned_data['username']
 
@@ -37,9 +38,27 @@ def test(request):
             'new_uuid': new_uuid
         }
 
-        return render(request, 'quiz/test.html', context)
+        # return render(request, 'quiz/test.html', context)
+    return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
 
-    return render(request, 'quiz/index.html', context)
+    # return render(request, 'quiz/index.html', context)
+
+
+def take_test(request, test_uuid):
+
+    test_detail = get_object_or_404(TestDetail, pk=test_uuid)
+
+    new_uuid = test_detail.id
+    questions = Question.objects.all()
+    options = Option.objects.all()
+
+    context = {
+        'questions': questions,
+        'options': options,
+        'new_uuid': new_uuid
+    }
+
+    return render(request, 'quiz/take_test.html', context)
 
 def submit_test(request):
     if request.method == 'POST':
