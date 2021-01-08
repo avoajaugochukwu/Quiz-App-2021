@@ -1,0 +1,25 @@
+.hero-section {
+    position: relative;
+    padding-top: 90px;
+    z-index: 1;
+  }
+
+.hero-shape {
+    position: absolute;
+    z-index: -1;
+    bottom: 0;
+    left: -100px;
+    display: none;
+  }
+
+  @media (min-width: 1600px) {
+    .hero-shape {
+      display: block;
+    }
+  }
+
+  @media (max-width: 756px) {
+    .hero-right-image {
+        padding-top: 50px;
+    }
+  }
