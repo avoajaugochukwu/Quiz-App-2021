@@ -1,0 +1,46 @@
+{% include 'quiz/header.html' %}
+{% load static %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6  mt-5 pt-3">
+            <div class="text-center mt-5 pt-3">
+                <h1>Answer all questions</h1>
+            </div>
+            <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3">
+                {% csrf_token %}
+                <input type="hidden" name="test_uuid" value="{{ new_uuid }}">
+                {% for question in questions %}
+                
+                <div>
+                    {{ question.text }}
+                    <br>
+                    {% for option in options %}
+
+                    {% if option.question_id.id == question.id %}
+                    <br>
+                    <span>
+                        <input type="radio" name="{{ question.id }}" value="{{ option.id }}"> {{ option.text }}
+                    </span>
+
+                    <!-- {% if option.answer %}
+                    => {{ option.answer }}
+                    {% endif %} -->
+                    {% endif %}
+
+                    {% endfor %}
+                    <br><br><br>
+                </div>
+                {% endfor %}
+
+                <button class="btn btn-success">Submit</button>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
+
+{% include 'quiz/footer.html' %}

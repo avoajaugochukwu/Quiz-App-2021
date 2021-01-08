@@ -1,0 +1,55 @@
+{% include 'quiz/header.html' %}
+{% load static %}
+
+
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6  mt-3 pt-3">
+            <div class="text-center">
+                <h1 class="display-5">Review answers</h1>
+                <p> {{ test_detail.username }},
+                    you got
+                    <b>
+                        {{ test_detail.score }}
+                    </b> right, out of
+                    <b>
+                        {{ test_detail.total }}
+                    </b>
+                    questions
+                </p>
+            </div>
+            <div>
+                {% for response in responses %}
+                <div
+                    class="{% if response.option_id.answer %} alert alert-success {% else %} alert alert-danger {% endif %}">
+                    {{ response.question_id.text }}
+                    <br>
+                    {% for option in options %}
+
+                    {% if option.question_id.id == response.question_id.id %}
+                    <br>
+                    <span class="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        {% if option.answer %}
+                        <strong>
+                            {% endif %}
+                            {{ option.text }}
+                            {% if option.answer %}
+                        </strong>
+                        {% endif %}
+                    </span>
+                    {% endif %}
+                    {% endfor %}
+
+                    <p class="small mt-2">Your answer: {{ response.option_id.text }}</p>
+                </div>
+                {% endfor %}
+                <a href="{% url 'quiz:index' %}" class="btn btn-success">Home</a>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+
+{% include 'quiz/footer.html' %}
