@@ -9,7 +9,9 @@ from datetime import datetime
 def index(request):
     form = TestDetailForm()
 
-    return render(request, 'quiz/index.html', {'form': form})
+    title = 'Quiz App - Python Django'
+
+    return render(request, 'quiz/index.html', {'form': form, 'title': title})
 
 def initialize_test(request):
     # We are using a post here because we save the username to the database
@@ -26,7 +28,7 @@ def initialize_test(request):
             TestDetail.objects.create(start=now, end=now, username=username)
 
             test_detail = TestDetail.objects.filter(start=now)
-            
+
             new_uuid = test_detail[0].id
             
             return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
@@ -41,11 +43,13 @@ def take_test(request, test_uuid):
     new_uuid = test_detail.id
     questions = Question.objects.all()
     options = Option.objects.all()
+    title = 'Quiz App - Take Test'
 
     context = {
         'questions': questions,
         'options': options,
-        'new_uuid': new_uuid
+        'new_uuid': new_uuid,
+        'title': title
     }
 
     return render(request, 'quiz/take_test.html', context)
@@ -94,30 +98,7 @@ def submit_test(request):
 
             response = Response.objects.create(question_id=question, answer=k.answer, option_id=option, test_id=test_detail)
 
-        ''' Prepare objects for result view
-
-           In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
-           We exploit the relationships between the Question, Options and Response model to achieve this
-           By tying back every object to the test_id of the current user '''
-        responses = Response.objects.filter(test_id=test_uuid)
-
-        # Obtain only questions related to the test_id
-        response_question_id = [i.question_id.id for i in responses]
-        questions = Question.objects.filter(id__in=response_question_id)
-
-        # Obtain only options related to only questions that have been filtered using test_id
-        question_options_id = [i.id for i in questions]
-        options = Option.objects.filter(question_id__in=question_options_id)
-
-        
-        context = {
-            'questions': questions,
-            'options': options,
-            'responses': responses,
-            'test_detail': test_detail
-        }
-
-        return render(request, 'quiz/result.html', context)
+        return HttpResponseRedirect(reverse('quiz:result_details', args=(test_uuid,)))
 
     return render(request, 'quiz/index.html')
 
@@ -125,9 +106,14 @@ def submit_test(request):
 # We would eventually pass the test_id to this view to use it to filter the Response object
 # in future only questions and options that have related test id will be passed to the frontend
 def result_details(request, test_uuid):
+    ''' Prepare objects for result view
+
+           In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
+           We exploit the relationships between the Question, Options and Response model to achieve this
+           By tying back every object to the test_id of the current user '''
     responses = Response.objects.filter(test_id=test_uuid)
 
-        # Obtain only questions related to the test_id
+    # Obtain only questions related to the test_id
     response_question_id = [i.question_id.id for i in responses]
     questions = Question.objects.filter(id__in=response_question_id)
 
@@ -137,6 +123,8 @@ def result_details(request, test_uuid):
 
 
     test_detail = TestDetail.objects.get(id=test_uuid)
+
+    title = 'Quiz App - View your answers'
 
     context = {
         'questions': questions,
