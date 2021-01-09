@@ -14,7 +14,7 @@ def index(request):
 def initialize_test(request):
     # We are using a post here because we save the username to the database
     if request.method == 'POST':
-        name = request.POST['username']
+        # name = request.POST['username']
         form = TestDetailForm(request.POST)
 
         if form.is_valid():
@@ -25,7 +25,7 @@ def initialize_test(request):
         ''' Create details for new test
             And obtain the uuid, that will be used to store other parameters
             Like score, response and others '''
-        TestDetail.objects.create(start=now, end=now, username=name)
+        TestDetail.objects.create(start=now, end=now, username=username)
         test_detail = TestDetail.objects.filter(start=now)
 
         new_uuid = test_detail[0].id
