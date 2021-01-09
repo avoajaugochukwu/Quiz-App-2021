@@ -14,34 +14,24 @@ def index(request):
 def initialize_test(request):
     # We are using a post here because we save the username to the database
     if request.method == 'POST':
-        # name = request.POST['username']
         form = TestDetailForm(request.POST)
 
         if form.is_valid():
             username = form.cleaned_data['username']
 
-            print(username)
-        now = datetime.now()
-        ''' Create details for new test
-            And obtain the uuid, that will be used to store other parameters
-            Like score, response and others '''
-        TestDetail.objects.create(start=now, end=now, username=username)
-        test_detail = TestDetail.objects.filter(start=now)
+            now = datetime.now()
+            ''' Create details for new test
+                And obtain the uuid, that will be used to store other parameters
+                Like score, response and others '''
+            TestDetail.objects.create(start=now, end=now, username=username)
 
-        new_uuid = test_detail[0].id
-        questions = Question.objects.all()
-        options = Option.objects.all()
+            test_detail = TestDetail.objects.filter(start=now)
+            
+            new_uuid = test_detail[0].id
+            
+            return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
 
-        context = {
-            'questions': questions,
-            'options': options,
-            'new_uuid': new_uuid
-        }
-
-        # return render(request, 'quiz/test.html', context)
-    return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
-
-    # return render(request, 'quiz/index.html', context)
+    return render(request, 'quiz/index.html', context)
 
 
 def take_test(request, test_uuid):
