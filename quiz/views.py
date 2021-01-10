@@ -58,18 +58,28 @@ def submit_test(request):
     if request.method == 'POST':
 
         test_uuid = request.POST['test_uuid']
+
+        ''' questions_count is used to track number of questions in the quiz
+            We would use it to compare result
+            To know when users didn't finish the test'''
+        questions_count = request.POST['questions_count']
+
         ''' Obtain post keys and values and convert to list
             post_keys contains the question id
             post_values holds the option id '''
         post_keys = list(request.POST.keys())
         post_values = list(request.POST.values())
         
-        ''' Eliminate the first two items in post_keys & post_values
-            Because they are the csrf and uuid keys and values
-            Then convert remaining values in the lists to integers
+        ''' Eliminate the first three items in post_keys & post_values
+            Because they are for the csrf, uuid keys and questions_count and values
+            Then convert remaining items in the lists to integers
             Using list comprehension '''
-        list_question_id = [int(i) for i in post_keys[2:]]
-        list_option_id = [int(i) for i in post_values[2:]]
+        list_question_id = [int(i) for i in post_keys[3:]]
+        list_option_id = [int(i) for i in post_values[3:]]
+
+        # Compare total questions count to number of options submitted
+        if int(questions_count) > len(list_option_id):
+            return HttpResponseRedirect(reverse('quiz:take_test', args=(test_uuid,)))
 
         # Get selected option objects from db
         options = Option.objects.filter(id__in=list_option_id)
@@ -108,9 +118,9 @@ def submit_test(request):
 def result_details(request, test_uuid):
     ''' Prepare objects for result view
 
-           In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
-           We exploit the relationships between the Question, Options and Response model to achieve this
-           By tying back every object to the test_id of the current user '''
+        In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
+        We exploit the relationships between the Question, Options and Response model to achieve this
+        By tying back every object to the test_id of the current user '''
     responses = Response.objects.filter(test_id=test_uuid)
 
     # Obtain only questions related to the test_id
@@ -130,7 +140,8 @@ def result_details(request, test_uuid):
         'questions': questions,
         'options': options,
         'responses': responses,
-        'test_detail': test_detail
+        'test_detail': test_detail,
+        'title': title
     }
     
     return render(request, 'quiz/result.html', context)
@@ -139,10 +150,11 @@ def result_details(request, test_uuid):
 def result_list(request):
     test_details = TestDetail.objects.all()
 
-    print(test_details)
+    title = 'Quiz App - View all results'
 
     context = {
-        'test_details': test_details
+        'test_details': test_details,
+        'title': title
     }
 
     return render(request, 'quiz/result_list.html', context)

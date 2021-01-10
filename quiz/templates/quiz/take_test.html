@@ -6,12 +6,19 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-6  mt-5 pt-3">
+            <!--  -->
+            {% if empty_options %}
+            <div class="alert alert-danger" role="alert">
+                Please answer all questions
+            </div>
+            {% endif %}
             <div class="text-center mt-5 pt-3">
                 <h1>Answer all questions</h1>
             </div>
             <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3">
                 {% csrf_token %}
                 <input type="hidden" name="test_uuid" value="{{ new_uuid }}">
+                <input type="hidden" name="questions_count" value="{{ questions|length }}">
                 {% for question in questions %}
                 
                 <div>
