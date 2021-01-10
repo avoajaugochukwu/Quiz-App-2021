@@ -30,6 +30,9 @@ def initialize_test(request):
             test_detail = TestDetail.objects.filter(start=now)
 
             new_uuid = test_detail[0].id
+
+            # Session will be used to track if users answered all the questions
+            request.session['unanswered_questions'] = False
             
             return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
 
@@ -44,12 +47,19 @@ def take_test(request, test_uuid):
     questions = Question.objects.all()
     options = Option.objects.all()
     title = 'Quiz App - Take Test'
+    
+    '''
+        unaswered_question will be false for new test
+        If this view is called from submit_test due to unanswered questions
+        Then unanswered_questions will be true, trigerring and alert'''
+    unanswered_questions = request.session['unanswered_questions']
 
     context = {
         'questions': questions,
         'options': options,
         'new_uuid': new_uuid,
-        'title': title
+        'title': title,
+        'unanswered_questions': request.session['unanswered_questions']
     }
 
     return render(request, 'quiz/take_test.html', context)
@@ -79,6 +89,7 @@ def submit_test(request):
 
         # Compare total questions count to number of options submitted
         if int(questions_count) > len(list_option_id):
+            request.session['unanswered_questions'] = True
             return HttpResponseRedirect(reverse('quiz:take_test', args=(test_uuid,)))
 
         # Get selected option objects from db

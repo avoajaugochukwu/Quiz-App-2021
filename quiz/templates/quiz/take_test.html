@@ -5,16 +5,25 @@
 <div class="container">
     <div class="row">
         <div class="col"></div>
-        <div class="col-6  mt-5 pt-3">
-            <!--  -->
-            {% if empty_options %}
-            <div class="alert alert-danger" role="alert">
-                Please answer all questions
+        <div class="col-6  mt-5">
+            <!-- ***** Display if all questions are not answered ****** -->
+            {% if unanswered_questions %}
+            <div class="alert alert-primary unanswered_questions_alert row" role="alert">
+                <div class="col">
+                    Please answer all questions
+                </div>
+                <div class="col">
+                    <div class="text-align" style="float: right;">
+                        <a href="" class="unanswered_questions_btn"><img src="{% static 'quiz/img/x.svg' %}" alt=""></a>
+                    </div>
+                </div>
             </div>
             {% endif %}
-            <div class="text-center mt-5 pt-3">
+            <!-- ************************** -->
+            <div class="text-center">
                 <h1>Answer all questions</h1>
             </div>
+
             <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3">
                 {% csrf_token %}
                 <input type="hidden" name="test_uuid" value="{{ new_uuid }}">
