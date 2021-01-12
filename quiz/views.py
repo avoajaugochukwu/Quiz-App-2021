@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, reverse, get_object_or_404
+from django.contrib import messages
+from django.db import IntegrityError
 from .models import *
 from .forms import TestDetailForm
 from datetime import datetime
@@ -25,7 +27,18 @@ def initialize_test(request):
             ''' Create details for new test
                 And obtain the uuid, that will be used to store other parameters
                 Like score, response and others '''
-            TestDetail.objects.create(start=now, end=now, username=username)
+
+            try:
+                TestDetail.objects.create(start=now, end=now, username=username)
+                ''' In the code below, we import IntegrityError and messages
+                    IntegrityError is an exception that is thrown when we try to save 
+                    the same username in the TestDetails table
+                    Messages: is used to pass a warning to the front end to inform the 
+                    user to enter a different username
+                '''
+            except IntegrityError:
+                messages.info(request, 'Username already in use, enter another username')
+                return HttpResponseRedirect(reverse('quiz:index'))
 
             test_detail = TestDetail.objects.filter(start=now)
 
@@ -36,7 +49,7 @@ def initialize_test(request):
             
             return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
 
-    return render(request, 'quiz/index.html', context)
+    return render(request, 'quiz/index.html')
 
 
 def take_test(request, test_uuid):

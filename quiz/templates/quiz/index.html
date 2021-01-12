@@ -21,10 +21,15 @@
                     <div class="col-6">
                         <form method="POST" action="{% url 'quiz:initialize_test' %}">
                             {% csrf_token %}
-                            <!-- <input name="username" type="text" class="form-control"
-                                placeholder="Please enter a username" required> -->
+
                             {{ form.username.error }}
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        <small class="text-danger">{{ message }}</small>
+                                    {% endfor %}
+                                {% endif %}
                             {{ form.username }}
+                            
                             <button class="mt-2 btn form-control btn-primary" type="submit">
                                 &nbsp;&nbsp; Start Quiz &nbsp;&nbsp;
                             </button>
