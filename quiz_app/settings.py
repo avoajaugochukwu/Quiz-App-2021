@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
-from app_secrets import S_SECRET_KEY
+import dj_database_url
+from app_secrets import S_SECRET_KEY, S_NAME, S_PASSWORD, S_USER
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = S_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -78,9 +79,9 @@ WSGI_APPLICATION = 'quiz_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'quiz_app',
-        'USER': 'postgres',
-        'PASSWORD': 'boys2men',
+        'NAME': S_NAME,
+        'USER': S_USER,
+        'PASSWORD': S_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -124,3 +125,31 @@ USE_TZ = False # To suppress error when obtaining last saved Detail object
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# My Code - Ugochukwu
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+PROJECT_ROOT   =   os.path.dirname(os.path.dirname(__file__))
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'assets')
+STATIC_URL = '/static/'
+print(PROJECT_ROOT)
+# Extra lookup directories for collectstatic to find static files
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'cities/static'),
+)
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Production database 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)
+
+ALLOWED_HOSTS = ['quiz-app-2021.herokuapp.com']
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+SECURE_HSTS_SECONDS = 60 #If this app is no longer available on HTTPS after 60seconds, the user will still be able to access the site
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
