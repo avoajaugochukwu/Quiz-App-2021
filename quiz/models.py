@@ -7,7 +7,7 @@ class TestDetail(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     score = models.IntegerField(default=0)
-    username = models.CharField(max_length=200)
+    username = models.CharField(max_length=200, unique=True)
     total = models.IntegerField(default=0)
 
     def __str__(self):
