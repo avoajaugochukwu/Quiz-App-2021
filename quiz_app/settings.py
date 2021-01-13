@@ -149,7 +149,7 @@ ALLOWED_HOSTS = ['quiz-app-2021.herokuapp.com']
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
-SECURE_HSTS_SECONDS = 60 #If this app is no longer available on HTTPS after 60seconds, the user will still be able to access the site
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 60 #If this app is no longer available on HTTPS after 60seconds, the user will still be able to access the site
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
