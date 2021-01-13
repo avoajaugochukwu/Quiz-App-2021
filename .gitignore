@@ -3,8 +3,9 @@ app_secrets.py
 
 
 # Byte-compiled / optimized / DLL files
-/__pycache__/
-quiz/__pycache__/
+__pycache__
+quiz/__pycache__
+quiz_app/__pycache__
 *.py[cod]
 *$py.class
 
