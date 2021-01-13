@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
-from app_secrets import S_SECRET_KEY, S_NAME, S_PASSWORD, S_USER
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -125,14 +124,14 @@ USE_TZ = False # To suppress error when obtaining last saved Detail object
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 # My Code - Ugochukwu
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 PROJECT_ROOT   =   os.path.dirname(os.path.dirname(__file__))
-STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'quiz')
 STATIC_URL = '/static/'
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'assets')
 print(PROJECT_ROOT)
 # Extra lookup directories for collectstatic to find static files
 STATICFILES_DIRS = (
