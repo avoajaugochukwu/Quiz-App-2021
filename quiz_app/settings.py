@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = S_SECRET_KEY
+SECRET_KEY = ')(a^yrov+yt^++ca^a_gbx-@gfvoz1k2ob1s$h82(0n6j*8o)9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'quiz_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': S_NAME,
-        'USER': S_USER,
-        'PASSWORD': S_PASSWORD,
+        'NAME': 'quiz_app',
+        'USER': 'postgres',
+        'PASSWORD': 'boys2men',
         'HOST': 'localhost',
         'PORT': '',
     }
@@ -130,12 +130,12 @@ STATIC_URL = '/static/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 PROJECT_ROOT   =   os.path.dirname(os.path.dirname(__file__))
-STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'assets')
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'quiz')
 STATIC_URL = '/static/'
 print(PROJECT_ROOT)
 # Extra lookup directories for collectstatic to find static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'cities/static'),
+    os.path.join(PROJECT_ROOT, 'quiz/static'),
 )
 
 #  Add configuration for static files storage using whitenoise
