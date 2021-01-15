@@ -7,7 +7,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+import dj_database_url
 from app_secrets import S_SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -141,7 +143,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 prod_db  =  dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(prod_db)
 
-ALLOWED_HOSTS = ['quiz-app-2021.herokuapp.com']
 
 # CSRF_COOKIE_SECURE = True
 # SESSION_COOKIE_SECURE = True
