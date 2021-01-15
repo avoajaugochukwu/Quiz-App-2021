@@ -3,9 +3,9 @@
 
 
 <div class="container">
-    <div class="row">
-        <div class="col"></div>
-        <div class="col-6  mt-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-lg-6 col-12 mt-5 mb-5">
             <!-- ***** Display if all questions are not answered ****** -->
             {% if unanswered_questions %}
             <div class="alert alert-primary unanswered_questions_alert row" role="alert">
@@ -24,7 +24,7 @@
                 <h1>Answer all questions</h1>
             </div>
 
-            <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3">
+            <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3 p-3">
                 {% csrf_token %}
                 <input type="hidden" name="test_uuid" value="{{ new_uuid }}">
                 <input type="hidden" name="questions_count" value="{{ questions|length }}">
@@ -38,7 +38,8 @@
                     {% if option.question_id.id == question.id %}
                     <br>
                     <span>
-                        <input type="radio" name="{{ question.id }}" value="{{ option.id }}"> {{ option.text }}
+                        <input type="radio" name="{{ question.id }}" value="{{ option.id }}" id="{{ option.id }}"> 
+                        <label for="{{ option.id }}">{{ option.text }}</label>
                     </span>
 
                     <!-- {% if option.answer %}
@@ -56,7 +57,7 @@
                 <button class="btn btn-success">Submit</button>
             </form>
         </div>
-        <div class="col"></div>
+        
     </div>
 </div>
 
