@@ -14,7 +14,7 @@ The app does not require login for ease of use. It only requires a **unique** us
 
 Besides the default tables created by Django, four custom tables were created for the apps operations.
 
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_db_model.png)
+![quiz_app_db_model](https://user-images.githubusercontent.com/4976722/104733071-72c47a80-573e-11eb-8bec-54085938278f.PNG)
 
 **TestDetail:** This table holds the test details like username, score and test times
 
@@ -25,17 +25,17 @@ Besides the default tables created by Django, four custom tables were created fo
 **Response:** This table holds the users choice/option for each question along with the test_id which is unique to each user/test attempt. The answer filled in this table enables me to show the user the right anser for each question, when they are reviewing their test. See test result feedback image for more understanding.
 
 ## Screenshots of the app during use
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_homepage.png)
+![quiz_app_homepage](https://user-images.githubusercontent.com/4976722/104733119-866fe100-573e-11eb-96a7-133578bf9ea1.PNG)
 *Home page*
 
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_test_page.png)
+![quiz_app_test_page](https://user-images.githubusercontent.com/4976722/104733249-b323f880-573e-11eb-8c5d-839f4b1c31b9.PNG)
 *Test page*
 
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_answer_all_questions.png)
+![quiz_app_answer_all_questions](https://user-images.githubusercontent.com/4976722/104732916-34c75680-573e-11eb-8bcf-9db21b76c35a.PNG)
 *Answer all questions alert when user tries to submit without answering all questions*
 
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_test_result_feedback.png)
+![quiz_app_test_result_feedback](https://user-images.githubusercontent.com/4976722/104733322-cdf66d00-573e-11eb-9021-14a6318bc51d.PNG)
 *Feedback page, where users can see the answers as well as their choices*
 
-![ScreenShot](/quiz/static/quiz/img/markdown_screenshots/quiz_app_result_board.png)
+![quiz_app_result_board](https://user-images.githubusercontent.com/4976722/104733183-9be50b00-573e-11eb-8d2c-3dd8420542a8.PNG)
 *Result board, where all test scores are displayed, but not sorted by highest to lowest*
