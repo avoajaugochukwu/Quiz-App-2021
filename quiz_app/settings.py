@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import dj_database_url
-from app_secrets import S_SECRET_KEY
+from app_secrets import S_SECRET_KEY, S_DB_NAME, S_USER, S_PASSWORD
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,9 +77,9 @@ WSGI_APPLICATION = 'quiz_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'quiz_app',
-        'USER': 'postgres',
-        'PASSWORD': 'boys2men',
+        'NAME': S_DB_NAME,
+        'USER': S_USER,
+        'PASSWORD': S_PASSWORD,
         'HOST': 'localhost',
         'PORT': '',
     }
