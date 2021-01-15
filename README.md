@@ -6,6 +6,7 @@ This is a quiz app, that has the following features:
 1. Questions with 4 options each (the number of options can vary without impacting the stability of the app)
 2. Instant feedback after submission
 3. Result board that shows the result of everyone who has completed the test
+4. All test results, the options the user selected alon with the right answer can be viewed at any time by clicking the result button
 
 ## How it works
 The app does not require login for ease of use. It only requires a **unique** username. Users can also not come back to complete the test since login credentials are not collected.
