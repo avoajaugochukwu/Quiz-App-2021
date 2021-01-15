@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import redirect, reverse, get_object_or_404
 from django.contrib import messages
 from django.db import IntegrityError
+from django.db.models import F
 from .models import *
 from .forms import TestDetailForm
 from datetime import datetime
@@ -120,6 +121,7 @@ def submit_test(request):
         test_detail = TestDetail.objects.get(id=test_uuid)
         test_detail.score = score
         test_detail.total = total
+        test_detail.end = datetime.now()
         test_detail.save()
 
         ''' Loop through list of questions and list of options from POST request
@@ -172,7 +174,14 @@ def result_details(request, test_uuid):
 
 
 def result_list(request):
-    test_details = TestDetail.objects.all()
+    ''' This filter uses the Django F expression to compare two fields in the same model
+        Here we are comparing the test start and end time, which were initialized with the
+        same value.
+        If the test was completed then the end time will be updated at submission.
+        If they are the same, it means the user did not finish the test,
+        because end time is updated when test is completed and submitted.
+    '''
+    test_details = TestDetail.objects.filter(start__lt=F('end'))
 
     title = 'Quiz App - View all results'
 
