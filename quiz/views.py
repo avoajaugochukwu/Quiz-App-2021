@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib import messages
 from django.db import IntegrityError
 from django.db.models import F
@@ -10,10 +8,6 @@ from django.views import View
 from .forms import TestDetailForm
 from .models import *
 
-
-# Create your views here.
-# def index(request):
-    
 
 class Index(View):
     def get(self, request):
@@ -28,13 +22,12 @@ def initialize_test(request):
         if form.is_valid():
             username = form.cleaned_data['username']
 
-            now = datetime.now()
             ''' Create details for new test
                 And obtain the uuid, that will be used to store other parameters
                 Like score, response and others '''
 
             try:
-                test_detail = TestDetail.objects.create(start=now, end=now, username=username)
+                test_detail = TestDetail.objects.create(username=username)
                 ''' In the code below, we import IntegrityError and messages
                     IntegrityError is an exception that is thrown when we try to save 
                     the same username in the TestDetails table
@@ -121,7 +114,6 @@ def submit_test(request):
         test_detail = TestDetail.objects.get(id=test_uuid)
         test_detail.score = score
         test_detail.total = total
-        test_detail.end = datetime.now()
         test_detail.save()
 
         ''' Loop through list of questions and list of options from POST request
@@ -182,6 +174,9 @@ def result_list(request):
 
         If they are the same, it means the user did not finish the test,
         because end time is updated when test is completed and submitted.
+
+        start__lt=F('end') means: start field is less than end field
+
     '''
     test_details = TestDetail.objects.filter(start__lt=F('end'))
 

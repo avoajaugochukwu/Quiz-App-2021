@@ -4,8 +4,8 @@ from django.db import models
 # Create your models here.
 class TestDetail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    start = models.DateTimeField()
-    end = models.DateTimeField()
+    start = models.DateTimeField(auto_now_add=True)
+    end = models.DateTimeField(auto_now=True)
     score = models.IntegerField(default=0)
     username = models.CharField(max_length=200, unique=True)
     total = models.IntegerField(default=0)
