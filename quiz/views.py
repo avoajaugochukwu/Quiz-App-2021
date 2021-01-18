@@ -30,7 +30,7 @@ def initialize_test(request):
                 Like score, response and others '''
 
             try:
-                TestDetail.objects.create(start=now, end=now, username=username)
+                test_detail = TestDetail.objects.create(start=now, end=now, username=username)
                 ''' In the code below, we import IntegrityError and messages
                     IntegrityError is an exception that is thrown when we try to save 
                     the same username in the TestDetails table
@@ -41,14 +41,10 @@ def initialize_test(request):
                 messages.info(request, 'Username already in use, enter another username')
                 return HttpResponseRedirect(reverse('quiz:index'))
 
-            test_detail = TestDetail.objects.filter(start=now)
-
-            new_uuid = test_detail[0].id
-
             # Session will be used to track if users answered all the questions
             request.session['unanswered_questions'] = False
             
-            return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
+            return HttpResponseRedirect(reverse('quiz:take_test', args=(test_detail.id,)))
 
     return render(request, 'quiz/index.html')
 
@@ -177,7 +173,9 @@ def result_list(request):
     ''' This filter uses the Django F expression to compare two fields in the same model
         Here we are comparing the test start and end time, which were initialized with the
         same value.
+
         If the test was completed then the end time will be updated at submission.
+
         If they are the same, it means the user did not finish the test,
         because end time is updated when test is completed and submitted.
     '''
