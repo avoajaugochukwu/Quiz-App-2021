@@ -14,8 +14,12 @@ class TestDetailForm(forms.Form):
                                 }
                         )
                     )
-    
-    
+    # For multiple fields
+    # widgets = {
+    #     'username': forms.TextInput(attrs={'class': 'form-control'}),
+    #     'email': forms.EmailInput(attrs={'class': 'form-control'})
+    #     ...
+    # }
 
     # error_messages = {
     #     'username': {

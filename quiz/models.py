@@ -11,7 +11,7 @@ class TestDetail(models.Model):
     total = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.username + " | " + str(self.score)
+        return f"{self.username} | {str(self.score)}"
 
 class Question(models.Model):
     text = models.CharField(max_length=500)

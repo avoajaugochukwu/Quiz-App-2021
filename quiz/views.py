@@ -1,20 +1,24 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.shortcuts import redirect, reverse, get_object_or_404
+from datetime import datetime
+
 from django.contrib import messages
 from django.db import IntegrityError
 from django.db.models import F
-from .models import *
+from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.views import View
+
 from .forms import TestDetailForm
-from datetime import datetime
+from .models import *
+
 
 # Create your views here.
-def index(request):
-    form = TestDetailForm()
+# def index(request):
+    
 
-    title = 'Quiz App - Python Django'
-
-    return render(request, 'quiz/index.html', {'form': form, 'title': title})
+class Index(View):
+    def get(self, request):
+        form = TestDetailForm()
+        return render(request, 'quiz/index.html', {'form': form})
 
 def initialize_test(request):
     # We are using a post here because we save the username to the database
