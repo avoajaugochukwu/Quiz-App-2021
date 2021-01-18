@@ -30,7 +30,7 @@ def initialize_test(request):
                 Like score, response and others '''
 
             try:
-                TestDetail.objects.create(start=now, end=now, username=username)
+                test_detail = TestDetail.objects.create(start=now, end=now, username=username)
                 ''' In the code below, we import IntegrityError and messages
                     IntegrityError is an exception that is thrown when we try to save 
                     the same username in the TestDetails table
@@ -41,14 +41,10 @@ def initialize_test(request):
                 messages.info(request, 'Username already in use, enter another username')
                 return HttpResponseRedirect(reverse('quiz:index'))
 
-            test_detail = TestDetail.objects.filter(start=now)
-
-            new_uuid = test_detail[0].id
-
             # Session will be used to track if users answered all the questions
             request.session['unanswered_questions'] = False
             
-            return HttpResponseRedirect(reverse('quiz:take_test', args=(new_uuid,)))
+            return HttpResponseRedirect(reverse('quiz:take_test', args=(test_detail.id,)))
 
     return render(request, 'quiz/index.html')
 
