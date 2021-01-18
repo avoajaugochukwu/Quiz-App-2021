@@ -12,39 +12,26 @@ from .models import *
 class Index(View):
     def get(self, request):
         form = TestDetailForm()
+
         return render(request, 'quiz/index.html', {'form': form})
 
-def initialize_test(request):
-    # We are using a post here because we save the username to the database
-    if request.method == 'POST':
-        form = TestDetailForm(request.POST)
+class StartTest(View):
+    # Initialize new test details, and redirect to test page
+    def get(self, request):
+        form = TestDetailForm()
+        return render(request, 'quiz/index.html', {'form': form})
 
-        if form.is_valid():
-            username = form.cleaned_data['username']
+    def post(self, request):
+        bound_form = TestDetailForm(request.POST)
 
-            ''' Create details for new test
-                And obtain the uuid, that will be used to store other parameters
-                Like score, response and others '''
-
-            try:
-                test_detail = TestDetail.objects.create(username=username)
-                ''' In the code below, we import IntegrityError and messages
-                    IntegrityError is an exception that is thrown when we try to save 
-                    the same username in the TestDetails table
-                    Messages: is used to pass a warning to the front end to inform the 
-                    user to enter a different username
-                '''
-            except IntegrityError:
-                messages.info(request, 'Username already in use, enter another username')
-                return HttpResponseRedirect(reverse('quiz:index'))
-
+        if bound_form.is_valid():
+            new_test = bound_form.save()
             # Session will be used to track if users answered all the questions
             request.session['unanswered_questions'] = False
-            
-            return HttpResponseRedirect(reverse('quiz:take_test', args=(test_detail.id,)))
 
-    return render(request, 'quiz/index.html')
+            return HttpResponseRedirect(reverse('quiz:take_test', args=(new_test.id,)))
 
+        return render(request, 'quiz/index.html', {'form': bound_form})
 
 def take_test(request, test_uuid):
 
