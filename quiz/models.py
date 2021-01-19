@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 
+
 # Create your models here.
 class TestDetail(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -13,11 +14,13 @@ class TestDetail(models.Model):
     def __str__(self):
         return f"{self.username} | {str(self.score)}"
 
+
 class Question(models.Model):
     text = models.CharField(max_length=500)
 
     def __str__(self):
         return self.text
+
 
 class Option(models.Model):
     text = models.CharField(max_length=500)
@@ -26,6 +29,7 @@ class Option(models.Model):
 
     def __str__(self):
         return self.text
+
 
 class Response(models.Model):
     question_id = models.ForeignKey(to=Question, on_delete=models.CASCADE)

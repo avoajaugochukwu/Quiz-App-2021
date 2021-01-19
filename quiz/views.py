@@ -15,6 +15,7 @@ class Index(View):
 
         return render(request, 'quiz/index.html', {'form': form})
 
+
 class StartTest(View):
     # Initialize new test details, and redirect to test page
     def get(self, request):
@@ -33,19 +34,19 @@ class StartTest(View):
 
         return render(request, 'quiz/index.html', {'form': bound_form})
 
-def take_test(request, test_uuid):
 
+def take_test(request, test_uuid):
     test_detail = get_object_or_404(TestDetail, pk=test_uuid)
 
     new_uuid = test_detail.id
     questions = Question.objects.all()
     options = Option.objects.all()
     title = 'Quiz App - Take Test'
-    
+
     '''
-        unaswered_question will be false for new test
+        unanswered_question will be false for new test
         If this view is called from submit_test due to unanswered questions
-        Then unanswered_questions will be true, trigerring and alert'''
+        Then unanswered_questions will be true, trigerring an alert in the template'''
     unanswered_questions = request.session['unanswered_questions']
 
     context = {
@@ -57,6 +58,7 @@ def take_test(request, test_uuid):
     }
 
     return render(request, 'quiz/take_test.html', context)
+
 
 def submit_test(request):
     if request.method == 'POST':
@@ -73,7 +75,7 @@ def submit_test(request):
             post_values holds the option id '''
         post_keys = list(request.POST.keys())
         post_values = list(request.POST.values())
-        
+
         ''' Eliminate the first three items in post_keys & post_values
             Because they are for the csrf, uuid keys and questions_count and values
             Then convert remaining items in the lists to integers
@@ -111,7 +113,8 @@ def submit_test(request):
             question = Question.objects.get(id=i)
             option = Option.objects.get(id=j)
 
-            response = Response.objects.create(question_id=question, answer=k.answer, option_id=option, test_id=test_detail)
+            response = Response.objects.create(question_id=question, answer=k.answer, option_id=option,
+                                               test_id=test_detail)
 
         return HttpResponseRedirect(reverse('quiz:result_details', args=(test_uuid,)))
 
@@ -121,11 +124,11 @@ def submit_test(request):
 # We would eventually pass the test_id to this view to use it to filter the Response object
 # in future only questions and options that have related test id will be passed to the frontend
 def result_details(request, test_uuid):
-    ''' Prepare objects for result view
+    """ Prepare objects for result view
 
         In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
         We exploit the relationships between the Question, Options and Response model to achieve this
-        By tying back every object to the test_id of the current user '''
+        By tying back every object to the test_id of the current user """
     responses = Response.objects.filter(test_id=test_uuid)
 
     # Obtain only questions related to the test_id
@@ -135,7 +138,6 @@ def result_details(request, test_uuid):
     # Obtain only options related to only questions that have been filtered using test_id
     question_options_id = [i.id for i in questions]
     options = Option.objects.filter(question_id__in=question_options_id)
-
 
     test_detail = TestDetail.objects.get(id=test_uuid)
 
@@ -148,12 +150,12 @@ def result_details(request, test_uuid):
         'test_detail': test_detail,
         'title': title
     }
-    
+
     return render(request, 'quiz/result.html', context)
 
 
 def result_list(request):
-    ''' This filter uses the Django F expression to compare two fields in the same model
+    """ This filter uses the Django F expression to compare two fields in the same model
         Here we are comparing the test start and end time, which were initialized with the
         same value.
 
@@ -164,7 +166,7 @@ def result_list(request):
 
         start__lt=F('end') means: start field is less than end field
 
-    '''
+    """
     test_details = TestDetail.objects.filter(start__lt=F('end'))
 
     title = 'Quiz App - View all results'

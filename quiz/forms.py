@@ -8,11 +8,11 @@ class TestDetailForm(forms.ModelForm):
     class Meta:
         model = TestDetail
         fields = ['username']
-    
+
     username = forms.CharField(
-                    max_length = 200, 
-                    widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Please enter a username'})
-                )
+        max_length=200,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Please enter a username'})
+    )
 
     def clean_username(self):
         new_username = self.cleaned_data.get('username')
@@ -23,7 +23,7 @@ class TestDetailForm(forms.ModelForm):
         # Check if username exists
         if TestDetail.objects.filter(username__iexact=new_username).count():
             raise ValidationError(f'Username, {new_username} already taken')
-        
+
         return new_username
 
     # def save(self):
@@ -31,7 +31,6 @@ class TestDetailForm(forms.ModelForm):
     #     new_test = TestDetail.objects.create(username = new_username)
 
     #     return new_test
-
 
     # For multiple fields
     # widgets = {
