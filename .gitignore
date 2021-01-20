@@ -8,6 +8,7 @@ quiz/__pycache__
 quiz_app/__pycache__
 *.py[cod]
 *$py.class
+.vscode
 
 # C extensions
 *.so
