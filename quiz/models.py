@@ -24,7 +24,7 @@ class Question(models.Model):
 
 class Option(models.Model):
     text = models.CharField(max_length=500)
-    question_id = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
     answer = models.BooleanField(default=False)
 
     def __str__(self):

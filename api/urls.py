@@ -7,7 +7,7 @@ app_name = 'api'
 
 router = routers.DefaultRouter()
 router.register(r'results', views.ResultViewSet)
-# # router.register(r'start_test', views.StartTest)
+router.register(r'take_test', views.TakeTestViewSet)
 
 urlpatterns = [
     # path('', views.index, name='api-index'),

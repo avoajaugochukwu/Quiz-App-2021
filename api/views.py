@@ -1,9 +1,11 @@
 from django.http import HttpResponse, JsonResponse
 from rest_framework import status, viewsets
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import TestDetailSerializer
+from quiz.models import TestDetail, Question, Option
+from .serializers import TestDetailSerializer, CombinedSerializer
 
 
 class ResultViewSet(viewsets.ModelViewSet):
@@ -13,12 +15,15 @@ class ResultViewSet(viewsets.ModelViewSet):
     queryset = TestDetail.objects.all()
     serializer_class = TestDetailSerializer
 
-class TakeTest(viewsets.ModelViewSet):
+class TakeTestViewSet(viewsets.ModelViewSet):
     """
-        API endpoint that allows users to be viewed or edited.
+        Show test questions and options
     """
-    queryset = 
+    queryset = Option.objects.all()
+    serializer_class = CombinedSerializer
+    
 
+    pass
 class ResultList(APIView):
     """
     List all snippets, or create a new snippet.

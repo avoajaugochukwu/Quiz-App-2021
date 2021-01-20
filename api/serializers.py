@@ -1,4 +1,4 @@
-from quiz.models import TestDetail
+from quiz.models import Option, Question, TestDetail
 from rest_framework import serializers
 
 
@@ -17,3 +17,28 @@ class TestDetailSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(f'Username, {username} already taken')
 
         return username
+
+
+class QuestionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text']
+
+
+class OptionSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Option
+        field = ['id', 'question_id', 'text', 'answer']
+
+
+class CombinedSerializer(serializers.HyperlinkedModelSerializer):
+    question = QuestionSerializer()
+    option = OptionSerializer(source='question_id_set', many=True)
+
+    class Meta:
+        fields = ['questions', 'options']
+
+# class QuestionSerializer(serializers.Serializer):
+#     pk = serializers.Field()
+#     text = serializers.CharField()
+#     option = serializers.RelatedFIeld()
