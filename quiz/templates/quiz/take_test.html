@@ -35,7 +35,7 @@
                     <br>
                     {% for option in options %}
 
-                    {% if option.question_id.id == question.id %}
+                    {% if option.question.id == question.id %}
                     <br>
                     <span>
                         <input type="radio" name="{{ question.id }}" value="{{ option.id }}" id="{{ option.id }}"> 

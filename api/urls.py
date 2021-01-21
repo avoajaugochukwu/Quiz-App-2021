@@ -9,11 +9,9 @@ router = routers.DefaultRouter()
 router.register(r'results', views.ResultViewSet)
 router.register(r'take_test', views.TakeTestViewSet)
 
-urlpatterns = [
-    # path('', views.index, name='api-index'),
-    path('', include(router.urls)),
-    # path('test/', views.ResultListViewSet, name='api-one'),
-    path('open/', views.ResultList.as_view()),
-]
 
-# urlpatterns = format_suffix_patterns(urlpatterns)
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('submit_test/', views.SubmitTest.as_view()),
+]

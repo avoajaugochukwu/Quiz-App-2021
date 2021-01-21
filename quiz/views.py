@@ -84,7 +84,7 @@ def submit_test(request):
             Using list comprehension '''
         list_question_id = [int(i) for i in post_keys[3:]]
         list_option_id = [int(i) for i in post_values[3:]]
-
+        print(list_question_id, list_option_id)
         # Compare total questions count to number of options submitted
         if int(questions_count) > len(list_option_id):
             request.session['unanswered_questions'] = True

@@ -19,26 +19,22 @@ class TestDetailSerializer(serializers.HyperlinkedModelSerializer):
         return username
 
 
-class QuestionSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Question
-        fields = ['id', 'text']
-
-
-class OptionSerializer(serializers.HyperlinkedModelSerializer):
+class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
-        field = ['id', 'question_id', 'text', 'answer']
+        fields = ('id', 'question', 'text', 'answer')
 
 
-class CombinedSerializer(serializers.HyperlinkedModelSerializer):
-    question = QuestionSerializer()
-    option = OptionSerializer(source='question_id_set', many=True)
+class QuestionSerializer(serializers.ModelSerializer):
+    options = OptionSerializer(many=True, read_only=True)
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'options']
+        # fields = '__all__'
+
+
+class SubmitTestSerializer(serializers.Serializer):
+    response = serializers.DictField()
 
     class Meta:
-        fields = ['questions', 'options']
-
-# class QuestionSerializer(serializers.Serializer):
-#     pk = serializers.Field()
-#     text = serializers.CharField()
-#     option = serializers.RelatedFIeld()
+        fields = ['response']
