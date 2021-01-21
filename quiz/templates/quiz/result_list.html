@@ -10,7 +10,7 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-lg-10 col-12">
-                    {% if test_details %}
+                    {% if quizzes %}
                     <table class="table table-dark table-striped">
                         <thead>
                             <tr>
@@ -20,12 +20,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for test_detail in test_details %}
+                            {% for quiz in quizzes %}
                             <tr>
-                                <td>{{ test_detail.username }}</td>
-                                <td>{{ test_detail.score }}</td>
+                                <td>{{ quiz.username }}</td>
+                                <td>{{ quiz.score }}</td>
                                 <td>
-                                    <a href="{% url 'quiz:result_details' test_detail.id %}"
+                                    <a href="{% url 'quiz:result_detail' quiz.id %}"
                                         class="btn btn-primary btn-sm">View result</a>
                                 </td>
                             </tr>

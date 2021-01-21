@@ -25,41 +25,41 @@ class StartTest(View):
         return render(request, 'quiz/index.html', {'form': form})
 
     def post(self, request):
-        bound_form = QuizForm(request.POST)
+        form = QuizForm(request.POST)
 
-        if bound_form.is_valid():
-            new_test = bound_form.save()
+        if form.is_valid():
+            new_quiz = form.save()
             # Session will be used to track if users answered all the questions
             request.session['unanswered_questions'] = False
 
-            return HttpResponseRedirect(reverse('quiz:take_test', args=(new_test.id,)))
+            return HttpResponseRedirect(reverse('quiz:take_quiz', args=(new_quiz.id,)))
 
-        return render(request, 'quiz/index.html', {'form': bound_form})
+        return render(request, 'quiz/index.html', {'form': form})
 
 
-def take_test(request, test_uuid):
-    test_detail = get_object_or_404(TestDetail, pk=test_uuid)
+def take_quiz(request, test_uuid):
+    quiz = get_object_or_404(Quiz, pk=test_uuid)
 
-    new_uuid = test_detail.id
+    new_uuid = quiz.id
     questions = Question.objects.all()
-    options = Option.objects.all()
-    title = 'Quiz App - Take Test'
+    choices = Choice.objects.all()
+    title = 'Quiz App - Take a shot'
 
     '''
         unanswered_question will be false for new test
         If this view is called from submit_test due to unanswered questions
         Then unanswered_questions will be true, trigerring an alert in the template'''
     unanswered_questions = request.session['unanswered_questions']
-
+    print(choices)
     context = {
         'questions': questions,
-        'options': options,
+        'choices': choices,
         'new_uuid': new_uuid,
         'title': title,
         'unanswered_questions': request.session['unanswered_questions']
     }
 
-    return render(request, 'quiz/take_test.html', context)
+    return render(request, 'quiz/take_quiz.html', context)
 
 
 def submit_test(request):
@@ -88,72 +88,72 @@ def submit_test(request):
         # Compare total questions count to number of options submitted
         if int(questions_count) > len(list_option_id):
             request.session['unanswered_questions'] = True
-            return HttpResponseRedirect(reverse('quiz:take_test', args=(test_uuid,)))
+            return HttpResponseRedirect(reverse('quiz:take_quiz', args=(test_uuid,)))
 
         # Get selected option objects from db
-        options = Option.objects.filter(id__in=list_option_id)
+        choices = Choice.objects.filter(id__in=list_option_id)
 
         # Calculate score and total using selected option objects
         score = 0
-        total = len(options)
+        total = len(choices)
 
-        for i in options:
+        for i in choices:
             if i.answer == True:
                 score += 1
 
-        # Get test_details object, so that test details can be saved
-        test_detail = TestDetail.objects.get(id=test_uuid)
-        test_detail.score = score
-        test_detail.total = total
-        test_detail.save()
+        # Get quiz object, so that test details can be saved
+        quiz = Quiz.objects.get(id=test_uuid)
+        quiz.score = score
+        quiz.total = total
+        quiz.save()
 
-        ''' Loop through list of questions and list of options from POST request
-            and also options object queryset
+        ''' Loop through list of questions and list of choices from POST request
+            and also choices object queryset
             So that we can tie all into the Response object,
             which will help to show case results with highlight for wrong and right answers'''
-        for i, j, k in zip(list_question_id, list_option_id, options):
+        for i, j, k in zip(list_question_id, list_option_id, choices):
             question = Question.objects.get(id=i)
-            option = Option.objects.get(id=j)
+            choice = Choice.objects.get(id=j)
 
-            response = Response.objects.create(question_id=question, answer=k.answer, option_id=option,
-                                               test_id=test_detail)
+            QuizAnswer.objects.create(question=question, answer=k.answer, choice=choice,
+                                               quiz=quiz)
 
-        return HttpResponseRedirect(reverse('quiz:result_details', args=(test_uuid,)))
+        return HttpResponseRedirect(reverse('quiz:result_detail', args=(test_uuid,)))
 
     return render(request, 'quiz/index.html')
 
 
-# We would eventually pass the test_id to this view to use it to filter the Response object
+# We would eventually pass the quiz_id to this view to use it to filter the Response object
 # in future only questions and options that have related test id will be passed to the frontend
-def result_details(request, test_uuid):
+def result_detail(request, test_uuid):
     """ Prepare objects for result view
 
         In the next few lines of code, we try to minimize the amount of objects that is sent back to the view
         We exploit the relationships between the Question, Options and Response model to achieve this
-        By tying back every object to the test_id of the current user """
-    responses = Response.objects.filter(test_id=test_uuid)
+        By tying back every object to the quiz_id of the current user """
+    quiz_answers = QuizAnswer.objects.filter(quiz_id=test_uuid)
 
-    # Obtain only questions related to the test_id
-    response_question_id = [i.question_id.id for i in responses]
-    questions = Question.objects.filter(id__in=response_question_id)
+    # Obtain only questions related to the quiz_id
+    quiz_answers_question_ids = [i.question.id for i in quiz_answers]
+    questions = Question.objects.filter(id__in=quiz_answers_question_ids)
 
-    # Obtain only options related to only questions that have been filtered using test_id
-    question_options_id = [i.id for i in questions]
-    options = Option.objects.filter(question_id__in=question_options_id)
+    # Obtain only options related to only questions that have been filtered using quiz_id
+    question_choice_ids = [i.id for i in questions]
+    choices = Choice.objects.filter(question_id__in=question_choice_ids)
 
-    test_detail = TestDetail.objects.get(id=test_uuid)
+    quiz = Quiz.objects.get(id=test_uuid)
 
     title = 'Quiz App - View your answers'
 
     context = {
         'questions': questions,
-        'options': options,
-        'responses': responses,
-        'test_detail': test_detail,
+        'choices': choices,
+        'quiz_answers': quiz_answers,
+        'quiz': quiz,
         'title': title
     }
 
-    return render(request, 'quiz/result.html', context)
+    return render(request, 'quiz/result_detail.html', context)
 
 
 def result_list(request):
@@ -169,12 +169,12 @@ def result_list(request):
         start__lt=F('end') means: start field is less than end field
 
     """
-    test_details = Test.objects.filter(start__lt=F('end'))
+    quizzes = Quiz.objects.filter(start__lt=F('end'))
 
     title = 'Quiz App - View all results'
 
     context = {
-        'test_details': test_details,
+        'quizzes': quizzes,
         'title': title
     }
 

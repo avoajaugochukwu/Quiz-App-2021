@@ -33,19 +33,19 @@
                 <div>
                     {{ question.text }}
                     <br>
-                    {% for option in options %}
+                    {% for choice in choices %}
 
-                    {% if option.question.id == question.id %}
-                    <br>
-                    <span>
-                        <input type="radio" name="{{ question.id }}" value="{{ option.id }}" id="{{ option.id }}"> 
-                        <label for="{{ option.id }}">{{ option.text }}</label>
-                    </span>
+                        {% if choice.question.id == question.id %}
+                        <br>
+                        <span>
+                            <input type="radio" name="{{ question.id }}" value="{{ choice.id }}" id="{{ choice.id }}"> 
+                            <label for="{{ choice.id }}">{{ choice.text }}</label>
+                        </span>
 
-                    <!-- {% if option.answer %}
-                    => {{ option.answer }}
-                    {% endif %} -->
-                    {% endif %}
+                        <!-- {% if choice.answer %}
+                        => {{ choice.answer }}
+                        {% endif %} -->
+                        {% endif %}
 
                     {% endfor %}
                     <br>

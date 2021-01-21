@@ -11,6 +11,9 @@ class Quiz(models.Model):
     username = models.CharField(max_length=200, unique=True)
     total = models.IntegerField(default=0)
 
+    class Meta:
+        verbose_name_plural = 'Quizzes'
+        
     def __str__(self):
         return f"{self.username} | {str(self.score)}"
 
@@ -38,4 +41,4 @@ class QuizAnswer(models.Model):
     answer = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.question_id.text + " |  " + self.choice.text + " | " + str(self.answer)
+        return self.question.text + " |  " + self.choice.text + " | " + str(self.answer)

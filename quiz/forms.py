@@ -21,7 +21,7 @@ class QuizForm(forms.ModelForm):
         if len(new_username) < 2:
             raise ValidationError('Username must be at least 2 characters')
         # Check if username exists
-        if TestDetail.objects.filter(username__iexact=new_username).count():
+        if Quiz.objects.filter(username__iexact=new_username).count():
             raise ValidationError(f'Username, {new_username} already taken')
 
         return new_username

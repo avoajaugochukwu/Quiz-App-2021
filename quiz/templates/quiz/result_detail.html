@@ -8,41 +8,41 @@
         <div class="col-lg-6 col-12  mt-3 pt-3">
             <div class="text-center">
                 <h1 class="display-5">Review answers</h1>
-                <p> {{ test_detail.username }},
+                <p> {{ quiz.username }},
                     you got
                     <b>
-                        {{ test_detail.score }}
+                        {{ quiz.score }}
                     </b> right, out of
                     <b>
-                        {{ test_detail.total }}
+                        {{ quiz.total }}
                     </b>
                     questions
                 </p>
             </div>
             <div>
-                {% for response in responses %}
+                {% for quiz_answer in quiz_answers %}
                 <div
-                    class="{% if response.option_id.answer %} alert alert-success {% else %} alert alert-danger {% endif %}">
-                    {{ response.question_id.text }}
+                    class="{% if quiz_answer.choice.answer %} alert alert-success {% else %} alert alert-danger {% endif %}">
+                    {{ quiz_answer.question.text }}
                     <br>
-                    {% for option in options %}
+                    {% for choice in choices %}
 
-                    {% if option.question_id.id == response.question_id.id %}
+                    {% if choice.question.id == quiz_answer.question.id %}
                     <br>
                     <span class="">
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        {% if option.answer %}
+                        {% if choice.answer %}
                         <strong>
                             {% endif %}
-                            {{ option.text }}
-                            {% if option.answer %}
+                            {{ choice.text }}
+                            {% if choice.answer %}
                         </strong>
                         {% endif %}
                     </span>
                     {% endif %}
                     {% endfor %}
 
-                    <p class="small mt-2">Your answer: {{ response.option_id.text }}</p>
+                    <p class="small mt-2">Your answer: {{ quiz_answer.choice.text }}</p>
                 </div>
                 {% endfor %}
                 <a href="{% url 'quiz:index' %}" class="btn btn-success">Home</a>
