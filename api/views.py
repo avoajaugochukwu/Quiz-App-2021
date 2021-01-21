@@ -57,9 +57,9 @@ class SubmitTest(APIView):
             # Check if all questions are answered
             # Cmpute score and total
             print('-----------------------------------------------------------')
-            submitted_questions = serializer.data['response']['question']
-            submitted_options = serializer.data['response']['option']
-            user_uuid = serializer.data['response']['user_uuid']
+            submitted_questions = serializer.data['quiz_response']['question']
+            submitted_options = serializer.data['quiz_response']['option']
+            user_uuid = serializer.data['quiz_response']['user_uuid']
 
             # Get selected option objects from db
             # Filter submitted_options in db that have answers as true and count

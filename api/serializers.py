@@ -34,7 +34,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class SubmitQuizSerializer(serializers.Serializer):
-    response = serializers.DictField()
+    quiz_response = serializers.DictField()
 
     class Meta:
-        fields = ['response']
+        fields = ['quiz_response']
