@@ -1,14 +1,14 @@
 from pprint import pprint
 
 from django.http import HttpResponse, JsonResponse
-from quiz.models import Option, Question, TestDetail, Response
+from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import (OptionSerializer, QuestionSerializer,
-                          SubmitTestSerializer, TestDetailSerializer)
+from .serializers import (ChoiceSerializer, QuestionSerializer,
+                          SubmitQuizSerializer, QuizSerializer)
 
 
 class ResultViewSet(viewsets.ModelViewSet):
@@ -16,8 +16,8 @@ class ResultViewSet(viewsets.ModelViewSet):
         Get: View all test attempts
         Add: Create new user
     """
-    queryset = TestDetail.objects.all()
-    serializer_class = TestDetailSerializer
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
 
 
 class TakeTestViewSet(viewsets.ModelViewSet):
@@ -51,7 +51,7 @@ class SubmitTest(APIView):
             answer_interpret: [n, y, y, n, y]
             score: 3/5
         """
-        serializer = SubmitTestSerializer(data=request.data)
+        serializer = SubmitQuizSerializer(data=request.data)
 
         if serializer.is_valid():
             # Check if all questions are answered
@@ -70,10 +70,10 @@ class SubmitTest(APIView):
             # Save to response table
 
             try:
-                test_detail = TestDetail.objects.get(id=user_uuid)
-                test_detail.score = score
-                test_detail.total = total
-                test_detail.save()
+                quiz = Quiz.objects.get(id=user_uuid)
+                quiz.score = score
+                quiz.total = total
+                quiz.save()
             except TestDetail.DoesNotExist:
                 errors = {"error": "User does not exist"}
                 return Response(errors, status=status.HTTP_400_BAD_REQUEST)
@@ -86,7 +86,7 @@ class SubmitTest(APIView):
                 option = Option.objects.get(id=j)
 
                 response = Response.objects.create(question_id=question, answer=k.answer, option_id=option,
-                                               test_id=test_detail)
+                                               test_id=quiz)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 

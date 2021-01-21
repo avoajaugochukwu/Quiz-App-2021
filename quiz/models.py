@@ -3,7 +3,7 @@ from django.db import models
 
 
 # Create your models here.
-class TestDetail(models.Model):
+class Quiz(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(auto_now=True)
@@ -22,20 +22,20 @@ class Question(models.Model):
         return self.text
 
 
-class Option(models.Model):
+class Choice(models.Model):
     text = models.CharField(max_length=500)
-    question = models.ForeignKey(to=Question, related_name='options', on_delete=models.CASCADE)
+    question = models.ForeignKey(to=Question, related_name='choice', on_delete=models.CASCADE)
     answer = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
 
 
-class Response(models.Model):
-    question_id = models.ForeignKey(to=Question, on_delete=models.CASCADE)
-    option_id = models.ForeignKey(to=Option, on_delete=models.CASCADE)
-    test_id = models.ForeignKey(to=TestDetail, on_delete=models.CASCADE)
+class QuizAnswer(models.Model):
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(to=Choice, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(to=Quiz, on_delete=models.CASCADE)
     answer = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.question_id.text + " |  " + self.option_id.text + " | " + str(self.answer)
+        return self.question_id.text + " |  " + self.choice.text + " | " + str(self.answer)

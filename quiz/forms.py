@@ -1,12 +1,12 @@
 from django import forms
 from django.forms import ModelForm, TextInput
-from .models import TestDetail
+from .models import Quiz
 from django.core.exceptions import ValidationError
 
 
-class TestDetailForm(forms.ModelForm):
+class QuizForm(forms.ModelForm):
     class Meta:
-        model = TestDetail
+        model = Quiz
         fields = ['username']
 
     username = forms.CharField(

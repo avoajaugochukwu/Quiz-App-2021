@@ -1,10 +1,10 @@
-from quiz.models import Option, Question, TestDetail
+from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import serializers
 
 
-class TestDetailSerializer(serializers.HyperlinkedModelSerializer):
+class QuizSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = TestDetail
+        model = Quiz
         fields = ['id', 'username', 'score', 'start', 'total']
         # fields = '__all__'
 
@@ -19,21 +19,21 @@ class TestDetailSerializer(serializers.HyperlinkedModelSerializer):
         return username
 
 
-class OptionSerializer(serializers.ModelSerializer):
+class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Option
+        model = Choice
         fields = ('id', 'question', 'text', 'answer')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    options = OptionSerializer(many=True, read_only=True)
+    choice = ChoiceSerializer(many=True, read_only=True)
     class Meta:
         model = Question
-        fields = ['id', 'text', 'options']
+        fields = ['id', 'text', 'choice']
         # fields = '__all__'
 
 
-class SubmitTestSerializer(serializers.Serializer):
+class SubmitQuizSerializer(serializers.Serializer):
     response = serializers.DictField()
 
     class Meta:

@@ -7,13 +7,13 @@ from django.views import View
 from django.views.generic.list import ListView
 
 
-from .forms import TestDetailForm
-from .models import *
+from .forms import QuizForm
+from .models import Choice, Question, Quiz, QuizAnswer
 
 
 class Index(View):
     def get(self, request):
-        form = TestDetailForm()
+        form = QuizForm()
 
         return render(request, 'quiz/index.html', {'form': form})
 
@@ -21,11 +21,11 @@ class Index(View):
 class StartTest(View):
     # Initialize new test details, and redirect to test page
     def get(self, request):
-        form = TestDetailForm()
+        form = QuizForm()
         return render(request, 'quiz/index.html', {'form': form})
 
     def post(self, request):
-        bound_form = TestDetailForm(request.POST)
+        bound_form = QuizForm(request.POST)
 
         if bound_form.is_valid():
             new_test = bound_form.save()
@@ -169,7 +169,7 @@ def result_list(request):
         start__lt=F('end') means: start field is less than end field
 
     """
-    test_details = TestDetail.objects.filter(start__lt=F('end'))
+    test_details = Test.objects.filter(start__lt=F('end'))
 
     title = 'Quiz App - View all results'
 
