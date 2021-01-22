@@ -1,12 +1,12 @@
 from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import serializers
+from quiz.models import Question, Choice
 
 
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ['id', 'username', 'score', 'start', 'total']
-        # fields = '__all__'
 
     # custom serialize methods must start with validate
     def validate_username(self, username):
@@ -47,10 +47,46 @@ class QuizDictSerializer(serializers.Serializer):
         fields = ['quiz_response']
 
 
-class ResultDetailSerializer(serializers.Serializer):
-    # choice = QuestionChoiceSerializer()
-    # quiz = QuizSerializer()
-    question = QuestionSerializer()
+class QuizAnswerSerializer(serializers.ModelSerializer):
+    # username = serializers.SerializerMethodField()
+    question = serializers.SerializerMethodField()
+    selected_answer = serializers.SerializerMethodField()
+    choice = serializers.SerializerMethodField()
+    is_correct = serializers.SerializerMethodField()
+    
 
     class Meta:
-        fields = ['question']
+        model = QuizAnswer
+        fields = ('question', 'selected_answer', 'is_correct', 'choice')
+
+    def get_question(self, obj):
+        return obj.question.text 
+    
+    def get_selected_answer(self, obj):
+        return obj.choice.text
+
+    def get_is_correct(self, obj):
+        choices = Choice.objects.filter(question=obj.question.id)
+        for choice in choices:
+            if choice.id == obj.choice.id:
+                return choice.answer
+        return None
+
+    def get_choice(self, obj):
+        choices = Choice.objects.filter(question=obj.question.id)
+        serializer = ChoiceSerializer(choices, many=True)
+        return serializer.data
+
+
+class QuizDetailSerialize(serializers.ModelSerializer):
+    quiz_answer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        # remove id, if unnecessary
+        fields = ['id', 'username', 'score', 'total', 'quiz_answer']
+
+    def get_quiz_answer(self, obj):
+        quiz_answers = QuizAnswer.objects.filter(quiz_id=obj.id)
+        serializer = QuizAnswerSerializer(quiz_answers, many=True)
+        return serializer.data

@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'quiz',
     'api',
     'rest_framework',
-    
 ]
 
 MIDDLEWARE = [

@@ -11,8 +11,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import (ChoiceSerializer, QuestionChoiceSerializer,
-                          QuestionSerializer, QuizDictSerializer,
-                          QuizSerializer, ResultDetailSerializer)
+                          QuestionSerializer, QuizAnswerSerializer,
+                          QuizDetailSerialize, QuizDictSerializer,
+                          QuizSerializer)
 
 # @api_view(["GET"])
 # def index(request):
@@ -68,6 +69,8 @@ class SubmitQuiz(APIView):
             # Check if all questions are answered
             # Cmpute score and total
             print('-----------------------------------------------------------')
+            pprint(request.data)
+            print('-----------------------------------------------------------')
             submitted_questions = serializer.data['quiz_dict_response']['question']
             submitted_choice = serializer.data['quiz_dict_response']['option']
             user_uuid = serializer.data['quiz_dict_response']['user_uuid']
@@ -114,47 +117,14 @@ class SubmitQuiz(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ResultDetail(APIView):
-    # use get_context_data
-
+class QuizDetail(APIView):
     def get(self, request, quiz_uuid):
-        quiz_answers = QuizAnswer.objects.filter(quiz_id=quiz_uuid)
-
-        # Obtain only questions related to the quiz_id
-        quiz_answers_question_ids = [i.question.id for i in quiz_answers]
-        questions = Question.objects.filter(id__in=quiz_answers_question_ids)
-
-        # Obtain only options related to only questions that have been filtered using quiz_id
-        question_choice_ids = [i.id for i in questions]
-        choices = Choice.objects.filter(question_id__in=question_choice_ids)
-
-        quiz = Quiz.objects.get(id=quiz_uuid)
-
-        result_detail = {}
-        # result_detail['quiz'] = quiz
-        # result_detail['choice'] = choices
-        result_detail['question'] = questions
-        
-        print('-----------------------------------------')
-        
-        context = {
-            "request": request,
-        }
-        serializer1 = QuestionChoiceSerializer(questions, many=True, context=context)
-        serializer2 = QuizSerializer(quiz, context=context)
-        print(dir(serializer1.data))
-        serializer = serializer1.data.append(serializer2.data)
-
-        print('-----------------------------------------')
-        # serializer = QuestionChoiceSerializer(context, many=True)
-        return Response(serializer)
-
-    def post(self, request):
-        pass
+        quiz_answers = Quiz.objects.filter(id=quiz_uuid)
+        serializer = QuizDetailSerialize(quiz_answers, many=True)        
+        return Response(serializer.data)
 
 
-
-class ResultList(ListAPIView):
+class QuizList(ListAPIView):
     serializer_class = QuizSerializer
 
     def get_queryset(self):

@@ -35,9 +35,9 @@ class Choice(models.Model):
 
 
 class QuizAnswer(models.Model):
-    question = models.ForeignKey(to=Question, related_name='quizAnswer_question', on_delete=models.CASCADE)
-    choice = models.ForeignKey(to=Choice, related_name='quizAnswer_choice', on_delete=models.CASCADE)
-    quiz = models.ForeignKey(to=Quiz, related_name='quizAnswer_quiz', on_delete=models.CASCADE)
+    question = models.ForeignKey(to=Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(to=Choice, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(to=Quiz, on_delete=models.CASCADE)
     answer = models.BooleanField(default=False)
 
     def __str__(self):
