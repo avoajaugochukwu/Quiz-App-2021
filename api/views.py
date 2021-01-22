@@ -6,12 +6,13 @@ from django.http import HttpResponse, JsonResponse
 from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
 
-from .serializers import (ChoiceSerializer, QuestionChoiceSerializer, QuizSerializer,
-                          QuizDictSerializer)
+from .serializers import (ChoiceSerializer, QuestionChoiceSerializer,
+                          QuestionSerializer, QuizDictSerializer,
+                          QuizSerializer, ResultDetailSerializer)
 
 # @api_view(["GET"])
 # def index(request):
@@ -40,8 +41,8 @@ class TakeTestViewSet(viewsets.ModelViewSet):
 
 class SubmitQuiz(APIView):
     def get(self, request):
-        quiz = Question.objects.all()
-        serializer = QuestionChoiceSerializer(quiz, many=True)
+        question = Question.objects.all()
+        serializer = QuestionChoiceSerializer(question, many=True)
         return Response(serializer.data)
 
     def post(self, request):
@@ -129,18 +130,24 @@ class ResultDetail(APIView):
 
         quiz = Quiz.objects.get(id=quiz_uuid)
 
+        result_detail = {}
+        # result_detail['quiz'] = quiz
+        # result_detail['choice'] = choices
+        result_detail['question'] = questions
+        
+        print('-----------------------------------------')
+        
         context = {
-            "quiz_dict_response": {
-                'questions': questions,
-                'choices': choices,
-                'quiz_answers': quiz_answers,
-                'quiz': quiz,
-            }
-            
+            "request": request,
         }
+        serializer1 = QuestionChoiceSerializer(questions, many=True, context=context)
+        serializer2 = QuizSerializer(quiz, context=context)
+        print(dir(serializer1.data))
+        serializer = serializer1.data.append(serializer2.data)
 
+        print('-----------------------------------------')
         # serializer = QuestionChoiceSerializer(context, many=True)
-        return Response(context)
+        return Response(serializer)
 
     def post(self, request):
         pass

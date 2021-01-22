@@ -2,7 +2,7 @@ from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import serializers
 
 
-class QuizSerializer(serializers.HyperlinkedModelSerializer):
+class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = ['id', 'username', 'score', 'start', 'total']
@@ -26,11 +26,17 @@ class ChoiceSerializer(serializers.ModelSerializer):
         fields = ('id', 'question', 'text', 'answer')
 
 
-class QuestionChoiceSerializer(serializers.ModelSerializer):
-    choice = ChoiceSerializer(many=True, read_only=True)
+class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
-        fields = ['id', 'text', 'choice']
+        fields = ('id', 'text')
+
+
+class QuestionChoiceSerializer(serializers.ModelSerializer):
+    choice_question = ChoiceSerializer(many=True, read_only=True)
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'choice_question']
         # fields = '__all__'
 
 
@@ -39,3 +45,12 @@ class QuizDictSerializer(serializers.Serializer):
 
     class Meta:
         fields = ['quiz_response']
+
+
+class ResultDetailSerializer(serializers.Serializer):
+    # choice = QuestionChoiceSerializer()
+    # quiz = QuizSerializer()
+    question = QuestionSerializer()
+
+    class Meta:
+        fields = ['question']
