@@ -13,5 +13,7 @@ router.register(r'take_test', views.TakeTestViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('submit_test/', views.SubmitTest.as_view()),
+    path('submit_quiz/', views.SubmitQuiz.as_view()),
+    path('result/', views.ResultList.as_view()),
+    path('result/<uuid:quiz_uuid>', views.ResultDetail.as_view()),
 ]

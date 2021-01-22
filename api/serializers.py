@@ -26,7 +26,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
         fields = ('id', 'question', 'text', 'answer')
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionChoiceSerializer(serializers.ModelSerializer):
     choice = ChoiceSerializer(many=True, read_only=True)
     class Meta:
         model = Question
@@ -34,8 +34,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         # fields = '__all__'
 
 
-class SubmitQuizSerializer(serializers.Serializer):
-    quiz_response = serializers.DictField()
+class QuizDictSerializer(serializers.Serializer):
+    quiz_dict_response = serializers.DictField()
 
     class Meta:
         fields = ['quiz_response']
