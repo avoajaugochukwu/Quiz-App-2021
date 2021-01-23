@@ -12,6 +12,7 @@ class QuizSerializer(serializers.ModelSerializer):
             )
         ]
     )
+
     class Meta:
         model = Quiz
         fields = ['id', 'username', 'score', 'start', 'total']
@@ -20,7 +21,7 @@ class QuizSerializer(serializers.ModelSerializer):
     def validate_username(self, username):
         # Check if username is less than 2 characters
         if len(username) < 2:
-            raise serializers.ValidationError('Username must be at least 2 characters')
+            raise serializers.ValidationError('Username must be at least 2 characters.')
         # Check if username exists
         if Quiz.objects.filter(username__iexact=username).count():
             raise serializers.ValidationError(f'Username, {username} already taken')
