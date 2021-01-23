@@ -1,9 +1,17 @@
 from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import serializers
 from quiz.models import Question, Choice
+from rest_framework.validators import UniqueValidator
 
 
 class QuizSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        validators=[UniqueValidator(
+                queryset=Quiz.objects.all(), 
+                message="This username has been taken. Please enter another username"
+            )
+        ]
+    )
     class Meta:
         model = Quiz
         fields = ['id', 'username', 'score', 'start', 'total']

@@ -6,7 +6,7 @@ from django.http import HttpResponse, JsonResponse
 from quiz.models import Choice, Question, Quiz, QuizAnswer
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -15,18 +15,50 @@ from .serializers import (ChoiceSerializer, QuestionChoiceSerializer,
                           QuizDetailSerialize, QuizDictSerializer,
                           QuizSerializer)
 
-# @api_view(["GET"])
-# def index(request):
-#     api_urls = {
-#         'List': 'submit_test/'
-#     }
-#     return Response(api_urls)
+@api_view(["GET"])
+def index(request):
+    api_urls = {
+        'List Quiz Result: GET': 'quiz/',
+        'Create New Quiz: POST': 'quiz/create/ : <str:username>'
+    }
+    return Response(api_urls)
 
+class QuizList(APIView):
+    """
+        List all quiz records, or create new quiz
+    """
+    
+    def get(self, request, format=None):
+        quizzes = Quiz.objects.filter(start__lt=F('end'))
+        serializer = QuizSerializer(quizzes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = QuizSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class QuizDetail(APIView):
+    def get(self, request, quiz_uuid):
+        quiz_answers = Quiz.objects.filter(id=quiz_uuid)
+        serializer = QuizDetailSerialize(quiz_answers, many=True)        
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = QuizSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ResultViewSet(viewsets.ModelViewSet):
     """
         Get: View all test attempts
-        Add: Create new user
+        POST: Create new user
     """
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
@@ -117,15 +149,6 @@ class SubmitQuiz(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class QuizDetail(APIView):
-    def get(self, request, quiz_uuid):
-        quiz_answers = Quiz.objects.filter(id=quiz_uuid)
-        serializer = QuizDetailSerialize(quiz_answers, many=True)        
-        return Response(serializer.data)
 
 
-class QuizList(ListAPIView):
-    serializer_class = QuizSerializer
 
-    def get_queryset(self):
-        return Quiz.objects.filter(start__lt=F('end'))
