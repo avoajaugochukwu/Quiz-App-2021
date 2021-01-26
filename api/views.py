@@ -67,11 +67,6 @@ class TakeQuiz(APIView):
 
 
 class SubmitQuiz(APIView):
-    # def get(self, request):
-    #     question = Question.objects.all()
-    #     serializer = QuestionChoiceSerializer(question, many=True)
-    #     return Response(serializer.data)
-
     def post(self, request):
         # Sample response
         """
