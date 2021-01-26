@@ -35,7 +35,7 @@ class QuizList(APIView):
     def get(self, request, format=None):
         quizzes = Quiz.objects.filter(start__lt=F('end'))
         serializer = QuizSerializer(quizzes, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
         serializer = QuizSerializer(data=request.data)
@@ -52,7 +52,7 @@ class QuizDetail(APIView):
     def get(self, request, quiz_uuid):
         quiz_answers = Quiz.objects.filter(id=quiz_uuid)
         serializer = QuizDetailSerialize(quiz_answers, many=True)        
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TakeQuiz(APIView):
@@ -63,7 +63,7 @@ class TakeQuiz(APIView):
         questions = Question.objects.all()
         serializer = QuestionChoiceSerializer(questions, many=True)
         # pprint(serializer.data.__dict__)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SubmitQuiz(APIView):
