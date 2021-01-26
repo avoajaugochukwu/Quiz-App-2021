@@ -32,7 +32,7 @@ class StartTest(View):
             # Session will be used to track if users answered all the questions
             request.session['unanswered_questions'] = False
 
-            return HttpResponseRedirect(reverse('quiz:take_quiz', args=(new_quiz.id,)))
+            return HttpResponseRedirect(reverse('quiz:quiz-take-quiz', args=(new_quiz.id,)))
 
         return render(request, 'quiz/index.html', {'form': form})
 
@@ -88,7 +88,7 @@ def submit_test(request):
         # Compare total questions count to number of options submitted
         if int(questions_count) > len(list_option_id):
             request.session['unanswered_questions'] = True
-            return HttpResponseRedirect(reverse('quiz:take_quiz', args=(test_uuid,)))
+            return HttpResponseRedirect(reverse('quiz:quiz-take-quiz', args=(test_uuid,)))
 
         # Get selected option objects from db
         choices = Choice.objects.filter(id__in=list_option_id)
@@ -118,7 +118,7 @@ def submit_test(request):
             QuizAnswer.objects.create(question=question, answer=k.answer, choice=choice,
                                                quiz=quiz)
 
-        return HttpResponseRedirect(reverse('quiz:result_detail', args=(test_uuid,)))
+        return HttpResponseRedirect(reverse('quiz:quiz-result-detail', args=(test_uuid,)))
 
     return render(request, 'quiz/index.html')
 

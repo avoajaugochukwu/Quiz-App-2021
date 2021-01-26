@@ -62,6 +62,7 @@ class TakeQuiz(APIView):
     def get(self, request):
         questions = Question.objects.all()
         serializer = QuestionChoiceSerializer(questions, many=True)
+        # pprint(serializer.data.__dict__)
         return Response(serializer.data)
 
 

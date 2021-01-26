@@ -24,7 +24,7 @@
                 <h1>Answer all questions</h1>
             </div>
 
-            <form method="POST" action="{% url 'quiz:submit_test' %}" class="pt-3 p-3">
+            <form method="POST" action="{% url 'quiz:quiz-submit-test' %}" class="pt-3 p-3">
                 {% csrf_token %}
                 <input type="hidden" name="test_uuid" value="{{ new_uuid }}">
                 <input type="hidden" name="questions_count" value="{{ questions|length }}">
